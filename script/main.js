@@ -21,7 +21,7 @@ const fetchData = (url, callback) => {
   xhr.send();
 };
 
-const handleDom = (question, answers,r) => {
+const handleDom = (question, answers, r) => {
   document.querySelector("#questionsCategory").textContent = question.category;
   document.querySelector("#questionsCount").textContent = `${
     curruntQuestion + 1
@@ -33,8 +33,8 @@ const handleDom = (question, answers,r) => {
       p.classList.add("answer");
       p.textContent = answer;
       p.addEventListener("click", answerCheck);
-      if(r === answer){
-        p.style.color = '#00FF00'
+      if (r === answer) {
+        p.style.color = "#00FF00";
       }
       answersDiv.appendChild(p);
     }
@@ -98,13 +98,11 @@ const showFinalResult = () => {
   ).textContent = `${rightAnswers} / ${numberOfQuestions}`;
 };
 
-const randomQuiz = (incorrectAnswers,correctAnswers)=>{
-  let answers = incorrectAnswers.concat(
-    correctAnswers
-  );
+const randomQuiz = (incorrectAnswers, correctAnswers) => {
+  let answers = incorrectAnswers.concat(correctAnswers);
   answers = shuffleArray(answers);
-  return answers
-}
+  return answers;
+};
 
 // Fetch Random Quiz Data
 addListner("#random", "click", () => {
@@ -112,8 +110,15 @@ addListner("#random", "click", () => {
   document.querySelector(".select-div").remove();
   document.querySelector(".container").style.display = "block";
   fetchData(url, (response) => {
-   let answers =  randomQuiz(response[curruntQuestion].incorrectAnswers,response[curruntQuestion].correctAnswer)
-    handleDom(response[curruntQuestion],answers,response[curruntQuestion].correctAnswer);
+    let answers = randomQuiz(
+      response[curruntQuestion].incorrectAnswers,
+      response[curruntQuestion].correctAnswer
+    );
+    handleDom(
+      response[curruntQuestion],
+      answers,
+      response[curruntQuestion].correctAnswer
+    );
     nextQuestionBtn.addEventListener("click", () => {
       testAnswer(
         response[curruntQuestion].question,
@@ -122,9 +127,16 @@ addListner("#random", "click", () => {
       answersDiv.textContent = "";
       if (curruntQuestion < numberOfQuestions - 1) {
         curruntQuestion++;
-      let answers=   randomQuiz(response[curruntQuestion].incorrectAnswers,response[curruntQuestion].correctAnswer)
+        let answers = randomQuiz(
+          response[curruntQuestion].incorrectAnswers,
+          response[curruntQuestion].correctAnswer
+        );
 
-        handleDom(response[curruntQuestion],answers,response[curruntQuestion].correctAnswer);
+        handleDom(
+          response[curruntQuestion],
+          answers,
+          response[curruntQuestion].correctAnswer
+        );
       } else {
         container.remove();
         showFinalResult();
@@ -155,11 +167,11 @@ function testAnswer(question, rightAnswer) {
   });
 }
 
-const programmingQuiz = (questionAnswer)=>{
+const programmingQuiz = (questionAnswer) => {
   let answers = Object.values(questionAnswer);
   answers = shuffleArray(answers);
-  return answers
-}
+  return answers;
+};
 
 // Fetch Programming Quiz Data
 addListner("#programming", "click", () => {
@@ -168,8 +180,10 @@ addListner("#programming", "click", () => {
   document.querySelector(".select-div").remove();
   document.querySelector(".container").style.display = "block";
   fetchData(url, (response) => {
-    programmingQuiz(response[curruntQuestion].answers)
-    handleDom(response[curruntQuestion],     programmingQuiz(response[curruntQuestion].answers)
+    programmingQuiz(response[curruntQuestion].answers);
+    handleDom(
+      response[curruntQuestion],
+      programmingQuiz(response[curruntQuestion].answers)
     );
     nextQuestionBtn.addEventListener("click", () => {
       let anwersResult = Object.values(
@@ -184,9 +198,16 @@ addListner("#programming", "click", () => {
         curruntQuestion++;
         let answers = Object.values(response[curruntQuestion].answers);
         answers = shuffleArray(answers);
-        handleDom(response[curruntQuestion],     programmingQuiz(response[curruntQuestion].answers)
+        handleDom(
+          response[curruntQuestion],
+          programmingQuiz(response[curruntQuestion].answers)
         );
       } else {
+        if (rightAnswers < 5) {
+          document.querySelector(".title-div").style.display = "none";
+          document.querySelector("video").style.display = "block";
+          document.querySelector("video").play();
+        }
         container.remove();
         showFinalResult();
         showResults(resultObject);
